@@ -101,4 +101,4 @@ if __name__ == "__main__":
     
     # تشغيل البوت
     print("Bot is running...")
-    bot.infinity_polling(skip_pending_updates=True)
+    bot.infinity_polling()
