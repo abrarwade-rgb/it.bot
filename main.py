@@ -63,9 +63,14 @@ def handle_messages(message):
         btn_m6 = types.KeyboardButton("📈 الإحصاء والاحتمالات (د. رياض الشرعبي)")
         btn_m7 = types.KeyboardButton("📊 مبادئ المحاسبة (د. ذي يزن)")
         btn_m8 = types.KeyboardButton("📅 جدول المحاضرات")
-        btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
+        
+        # زرين القائمة والرجوع بجانب بعض في الأسفل
         btn_back = types.KeyboardButton("رجوع")
-        markup.add(btn_m1, btn_m2, btn_m3, btn_m4, btn_m5, btn_m6, btn_m7, btn_m8, btn_home, btn_back)
+        btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
+        
+        markup.add(btn_m1, btn_m2, btn_m3, btn_m4, btn_m5, btn_m6, btn_m7, btn_m8)
+        markup.row(btn_back, btn_home)
+        
         bot.send_message(chat_id, "📚 مقررات مستوى أول - اختر المقرر المطلوب:", reply_markup=markup)
 
     elif "تصميم منطقي رقمي" in text:
@@ -82,26 +87,34 @@ def handle_messages(message):
         send_course_menu(chat_id, text, has_practical=False)
 
     elif text == "📅 جدول المحاضرات":
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    elif "ملزمة المقرر" in text or "صور المحاضرات" in text or "ملخص المقرر" in text or "نماذج اختبارات" in text or "عملي" in text:
+    # معالجة الضغط على محتوى المقرر (بدون اسم الدكتور في الزر)
+    elif "ملزمة المقرر" in text or "صور المحاضرات" in text or "ملخص المقرر" in text or "نماذج اختبارات" in text or "العملي" in text:
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
 def send_course_menu(chat_id, course_name, has_practical=False):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    btn_mlazem = types.KeyboardButton(f"📖 ملزمة المقرر - {course_name}")
-    btn_photos = types.KeyboardButton(f"🖼️ صور المحاضرات - {course_name}")
-    btn_summary = types.KeyboardButton(f"📝 ملخص المقرر - {course_name}")
-    btn_exams = types.KeyboardButton(f"📋 نماذج اختبارات - {course_name}")
+    # جعل الأزرار عمودية (row_width=1)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    
+    btn_mlazem = types.KeyboardButton("📖 ملزمة المقرر")
+    btn_photos = types.KeyboardButton("🖼️ صور المحاضرات")
+    btn_summary = types.KeyboardButton("📝 ملخص المقرر")
+    btn_exams = types.KeyboardButton("📋 نماذج اختبارات")
+    
     markup.add(btn_mlazem, btn_photos, btn_summary, btn_exams)
+    
     if has_practical:
-        btn_practical = types.KeyboardButton(f"⚙️ العملي - {course_name}")
+        btn_practical = types.KeyboardButton("⚙️ العملي")
         markup.add(btn_practical)
+        
+    # زرين العودة والقائمة الرئيسية بجانب بعض في السطر الأخير
     btn_back = types.KeyboardButton("العودة للمقررات")
     btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
-    markup.add(btn_back, btn_home)
+    markup.row(btn_back, btn_home)
+    
     bot.send_message(chat_id, f"📌 اختر المحتوى المطلوب لمادة: *{course_name}*", parse_mode="Markdown", reply_markup=markup)
 
 if __name__ == "__main__":
