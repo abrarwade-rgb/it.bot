@@ -6,7 +6,9 @@ from telebot import types
 
 TOKEN = "8927080861:AAE2c2Ib2BErJmfgE7NVbwGwuU-nnSHhxfw"
 bot = telebot.TeleBot(TOKEN)
+bot.remove_webhook()  # لحذف أي ربط ويبهوك قديم وإيقاف الإعلانات المزعجة نهائياً
 
+# --- 1. سيرفر الـ Flask لإبقاء البوت مستيقظاً على Render ---
 app = Flask(__name__)
 
 @app.route("/")
@@ -16,12 +18,19 @@ def home():
 def run_flask():
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
+
+# --- 2. القوائم والأزرار الرئيسية والفرعية ---
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("🎓 جامعة الجند IT مستوى ثاني 2026/2027")
     markup.add(btn1)
-    bot.send_message(message.chat.id, "مرحباً بك يا أبرار في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:", reply_markup=markup)
+    bot.send_message(
+        message.chat.id,
+        "مرحباً بك يا أبرار في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:",
+        reply_markup=markup
+    )
 
 @bot.message_handler(func=lambda message: True)
 def handle_messages(message):
@@ -43,7 +52,11 @@ def handle_messages(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         btn_back = types.KeyboardButton("رجوع")
         markup.add(btn_back)
-        bot.send_message(chat_id, "⚠️ الترم الثاني والمستوى الثاني غير متوفر حالياً، لم يتم البدء فيه بعد، يتم تجهيز محتوى الترم.", reply_markup=markup)
+        bot.send_message(
+            chat_id,
+            "⚠️ الترم الثاني والمستوى الثاني غير متوفر حالياً، لم يتم البدء فيه بعد، يتم تجهيز محتوى الترم.",
+            reply_markup=markup
+        )
 
     elif text == "رجوع":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -64,14 +77,17 @@ def handle_messages(message):
         btn_m7 = types.KeyboardButton("📊 مبادئ المحاسبة (د. ذي يزن)")
         btn_m8 = types.KeyboardButton("📅 جدول المحاضرات")
         
-        # زرين القائمة والرجوع بجانب بعض في الأسفل
         btn_back = types.KeyboardButton("رجوع")
         btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
         
         markup.add(btn_m1, btn_m2, btn_m3, btn_m4, btn_m5, btn_m6, btn_m7, btn_m8)
         markup.row(btn_back, btn_home)
         
-        bot.send_message(chat_id, "📚 مقررات مستوى أول - اختر المقرر المطلوب:", reply_markup=markup)
+        bot.send_message(
+            chat_id,
+            "📚 مقررات مستوى أول - اختر المقرر المطلوب:",
+            reply_markup=markup
+        )
 
     elif "تصميم منطقي رقمي" in text:
         send_course_menu(chat_id, "تصميم منطقي رقمي (د. عبد الرحمن سعيد)", has_practical=True)
@@ -91,12 +107,10 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # معالجة الضغط على محتوى المقرر (بدون اسم الدكتور في الزر)
     elif "ملزمة المقرر" in text or "صور المحاضرات" in text or "ملخص المقرر" in text or "نماذج اختبارات" in text or "العملي" in text:
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
 def send_course_menu(chat_id, course_name, has_practical=False):
-    # جعل الأزرار عمودية (row_width=1)
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     
     btn_mlazem = types.KeyboardButton("📖 ملزمة المقرر")
@@ -110,16 +124,18 @@ def send_course_menu(chat_id, course_name, has_practical=False):
         btn_practical = types.KeyboardButton("⚙️ العملي")
         markup.add(btn_practical)
         
-    # زرين العودة والقائمة الرئيسية بجانب بعض في السطر الأخير
     btn_back = types.KeyboardButton("العودة للمقررات")
     btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
     markup.row(btn_back, btn_home)
     
     bot.send_message(chat_id, f"📌 اختر المحتوى المطلوب لمادة: *{course_name}*", parse_mode="Markdown", reply_markup=markup)
 
+
+# --- 3. تشغيل السيرفر والبوت معاً ---
 if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
+
     print("Bot is running...")
     bot.infinity_polling()
         
