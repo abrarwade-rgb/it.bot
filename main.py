@@ -1,78 +1,50 @@
-Import os
+import os
 import threading
 from flask import Flask
 import telebot
 from telebot import types
 
-# ضع Token البوت الخاص بك هنا بين القوسين
 TOKEN = "8927080861:AAE2c2Ib2BErJmfgE7NVbwGwuU-nnSHhxfw"
 bot = telebot.TeleBot(TOKEN)
 
-
-# --- 1. سيرفر الـ Flask لإبقاء البوت مستيقظاً على Render ---
 app = Flask(__name__)
-
 
 @app.route("/")
 def home():
     return "Bot is running 24/7!"
 
-
 def run_flask():
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
-
-# --- 2. القوائم والأزرار الرئيسية والفرعية ---
-
-
-# القائمة الرئيسية عند بدء البوت (/start)
-@bot.message_handler(commands=["start"])
+@bot.message_handler(commands=['start'])
 def send_welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-    btn1 = types.KeyboardButton(
-        "🎓 جامعة الجند IT مستوى ثاني 2026/2027"
-    )  # الزر الرئيسي الأول
+    btn1 = types.KeyboardButton("🎓 جامعة الجند IT مستوى ثاني 2026/2027")
     markup.add(btn1)
-    bot.send_message(
-        message.chat.id,
-        "مرحباً بك يا أبرار في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:",
-        reply_markup=markup,
-    )
+    bot.send_message(message.chat.id, "مرحباً بك يا أبرار في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:", reply_markup=markup)
 
-
-# معالجة الضغط على الأزرار
 @bot.message_handler(func=lambda message: True)
 def handle_messages(message):
     text = message.text
     chat_id = message.chat.id
 
-    # 1. عند الضغط على زر الجامعة الرئيسي
     if text == "🎓 جامعة الجند IT مستوى ثاني 2026/2027":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn_level1 = types.KeyboardButton("📚 مستوى أول")
         btn_level2 = types.KeyboardButton("🔒 مستوى ثاني")
         btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
         markup.add(btn_level1, btn_level2, btn_home)
-        bot.send_message(
-            chat_id, "اختر المستوى الدراسي:", reply_markup=markup
-        )
+        bot.send_message(chat_id, "اختر المستوى الدراسي:", reply_markup=markup)
 
-    # 2. القائمة الرئيسية
     elif text == "🏠 القائمة الرئيسية":
         send_welcome(message)
 
-    # 3. مستوى ثاني (لم يتم البدء فيه بعد)
     elif text == "🔒 مستوى ثاني":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         btn_back = types.KeyboardButton("رجوع")
         markup.add(btn_back)
-        bot.send_message(
-            chat_id,
-            "⚠️ الترم الثاني والمستوى الثاني غير متوفر حالياً، لم يتم البدء فيه بعد، يتم تجهيز محتوى الترم.",
-            reply_markup=markup,
-        )
+        bot.send_message(chat_id, "⚠️ الترم الثاني والمستوى الثاني غير متوفر حالياً، لم يتم البدء فيه بعد، يتم تجهيز محتوى الترم.", reply_markup=markup)
 
-    # 4. زر الرجوع
     elif text == "رجوع":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn_level1 = types.KeyboardButton("📚 مستوى أول")
@@ -81,37 +53,21 @@ def handle_messages(message):
         markup.add(btn_level1, btn_level2, btn_home)
         bot.send_message(chat_id, "أهلاً بك، اختر المستوى:", reply_markup=markup)
 
-    # 5. مستوى أول (المقررات الدراسية بشكل عمودي row_width=1)
     elif text == "📚 مستوى أول" or text == "العودة للمقررات":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-        btn_m1 = types.KeyboardButton(
-            "⚡ تصميم منطقي رقمي (د. عبد الرحمن سعيد)"
-        )  # محدث
+        btn_m1 = types.KeyboardButton("⚡ تصميم منطقي رقمي (د. عبد الرحمن سعيد)")
         btn_m2 = types.KeyboardButton("💻 مقدمة قواعد بيانات (د. بشير الطيار)")
-        btn_m3 = types.KeyboardButton(
-            "🔌 مبادئ الدوائر الكهربائية (د. مروان العسلي)"
-        )
-        btn_m4 = types.KeyboardButton(
-            "🏗️ هياكل البيانات والخوارزميات (د. محمد سلطان)"
-        )
-        btn_m5 = types.KeyboardButton(
-            "📐 تحليل وتصميم النظم (د. عبد الرحمن سعيد)"
-        )  # محدث
+        btn_m3 = types.KeyboardButton("🔌 مبادئ الدوائر الكهربائية (د. مروان العسلي)")
+        btn_m4 = types.KeyboardButton("🏗️ هياكل البيانات والخوارزميات (د. محمد سلطان)")
+        btn_m5 = types.KeyboardButton("📐 تحليل وتصميم النظم (د. عبد الرحمن سعيد)")
         btn_m6 = types.KeyboardButton("📈 الإحصاء والاحتمالات (د. رياض الشرعبي)")
         btn_m7 = types.KeyboardButton("📊 مبادئ المحاسبة (د. ذي يزن)")
         btn_m8 = types.KeyboardButton("📅 جدول المحاضرات")
         btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
         btn_back = types.KeyboardButton("رجوع")
-        markup.add(
-            btn_m1, btn_m2, btn_m3, btn_m4, btn_m5, btn_m6, btn_m7, btn_m8, btn_home, btn_back
-        )
-        bot.send_message(
-            chat_id,
-            "📚 مقررات مستوى أول - اختر المقرر المطلوب:",
-            reply_markup=markup,
-        )
+        markup.add(btn_m1, btn_m2, btn_m3, btn_m4, btn_m5, btn_m6, btn_m7, btn_m8, btn_home, btn_back)
+        bot.send_message(chat_id, "📚 مقررات مستوى أول - اختر المقرر المطلوب:", reply_markup=markup)
 
-    # 6. تفاصيل مقررات المستوى الأول (المقررات + زر العملي المحدث)
     elif "تصميم منطقي رقمي" in text:
         send_course_menu(chat_id, "تصميم منطقي رقمي (د. عبد الرحمن سعيد)", has_practical=True)
     elif "مقدمة قواعد بيانات" in text:
@@ -122,7 +78,6 @@ def handle_messages(message):
         send_course_menu(chat_id, "هياكل البيانات والخوارزميات (د. محمد سلطان)", has_practical=True)
     elif "تحليل وتصميم النظم" in text:
         send_course_menu(chat_id, "تحليل وتصميم النظم (د. عبد الرحمن سعيد)", has_practical=True)
-    
     elif "الإحصاء والاحتمالات" in text or "مبادئ المحاسبة" in text:
         send_course_menu(chat_id, text, has_practical=False)
 
@@ -131,36 +86,27 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 7. الأزرار الفرعية داخل المقرر
     elif "ملزمة المقرر" in text or "صور المحاضرات" in text or "ملخص المقرر" in text or "نماذج اختبارات" in text or "عملي" in text:
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
-
-# دالة مساعدة لترتيب أزرار محتوى المقرر الواحد
 def send_course_menu(chat_id, course_name, has_practical=False):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     btn_mlazem = types.KeyboardButton(f"📖 ملزمة المقرر - {course_name}")
     btn_photos = types.KeyboardButton(f"🖼️ صور المحاضرات - {course_name}")
     btn_summary = types.KeyboardButton(f"📝 ملخص المقرر - {course_name}")
     btn_exams = types.KeyboardButton(f"📋 نماذج اختبارات - {course_name}")
-    
     markup.add(btn_mlazem, btn_photos, btn_summary, btn_exams)
-    
     if has_practical:
         btn_practical = types.KeyboardButton(f"⚙️ العملي - {course_name}")
         markup.add(btn_practical)
-        
     btn_back = types.KeyboardButton("العودة للمقررات")
     btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
     markup.add(btn_back, btn_home)
-    
     bot.send_message(chat_id, f"📌 اختر المحتوى المطلوب لمادة: *{course_name}*", parse_mode="Markdown", reply_markup=markup)
 
-
-# --- 3. تشغيل السيرفر والبوت معاً ---
 if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
-
     print("Bot is running...")
     bot.infinity_polling()
+        
