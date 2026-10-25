@@ -4,7 +4,7 @@ from flask import Flask
 import telebot
 from telebot import types
 
-TOKEN = "8927080861:AAE2c2Ib2BErJmfgE7NVbwGwuU-nnSHhxfw"
+TOKEN = "8953275408:AAGZDn0C7n9nKOSdFQmsw67r1bzDWiyGh6Q"
 bot = telebot.TeleBot(TOKEN)
 bot.remove_webhook()  # لحذف أي ربط ويبهوك قديم وإيقاف الإعلانات المزعجة نهائياً
 
@@ -138,4 +138,4 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-        
+    
