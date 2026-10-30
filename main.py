@@ -4,7 +4,7 @@ from flask import Flask
 import telebot
 from telebot import types
 
-TOKEN = "8953275408:AAGZDn0C7n9nKOSdFQmsw67r1bzDWiyGh6Q"
+TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 bot.remove_webhook()  # لحذف أي ربط ويبهوك قديم وإيقاف الإعلانات المزعجة نهائياً
 
