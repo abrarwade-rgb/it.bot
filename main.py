@@ -138,4 +138,26 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-    
+
+# ==========================================
+# أرشيف مقرر قواعد البيانات - دفعة IT
+# ==========================================
+
+@bot.callback_query_handler(func=lambda call: call.data == 'db_file_1')
+def send_database_file_one(call):
+    file_id_1 = "BQACAgQAAxkBAAIuVWryDwjFlZAjwepTAhww2hZMLIzNAAJ3HwACVHyRU6eGh9pBrc4DPQQ"
+    bot.send_document(
+        call.message.chat.id, 
+        file_id_1, 
+        caption="📖 مقرر قواعد البيانات\n📁 الملف الأول: Database Fundamentals (Part 1)\n💙 دفعة IT - جامعة الجند"
+    )
+
+@bot.callback_query_handler(func=lambda call: call.data == 'db_file_2')
+def send_database_file_two(call):
+    file_id_2 = "BQACAgQAAxkBAAIuWmryEZYw73kKcjERPTohNV_IKjj0AAJ6HwACVHyRU1g0qUA9NNeGPQQ"
+    bot.send_document(
+        call.message.chat.id, 
+        file_id_2, 
+        caption="📖 مقرر قواعد البيانات\n📁 الملف الثاني: Database Fundamentals (Part 2)\n💙 دفعة IT - جامعة الجند"
+    )
+
