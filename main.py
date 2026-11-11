@@ -28,7 +28,7 @@ def send_welcome(message):
     markup.add(btn1)
     bot.send_message(
         message.chat.id,
-        "مرحباً بك يا أبرار في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:",
+        "مرحباً بك في بوت دليل تقنية المعلومات - جامعة الجند 💙✨\nاختر من الأدناه:",
         reply_markup=markup
     )
 
@@ -98,7 +98,8 @@ def handle_messages(message):
     elif "هياكل البيانات والخوارزميات" in text:
         send_course_menu(chat_id, "هياكل البيانات والخوارزميات (د. محمد سلطان)", has_practical=True)
     elif "تحليل وتصميم النظم" in text:
-        send_course_menu(chat_id, "تحليل وتصميم النظم (د. عبد الرحمن سعيد)", has_practical=True)
+        # تحليل وتصميم النظم مادة نظرية فقط (بدون عملي)
+        send_course_menu(chat_id, "تحليل وتصميم النظم (د. عبد الرحمن سعيد)", has_practical=False)
     elif "الإحصاء والاحتمالات" in text or "مبادئ المحاسبة" in text:
         send_course_menu(chat_id, text, has_practical=False)
 
@@ -107,7 +108,34 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    elif "ملزمة المقرر" in text or "صور المحاضرات" in text or "ملخص المقرر" in text or "نماذج اختبارات" in text or "العملي" in text:
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (ملفات تليجرام مباشرة تراكمية)
+    elif text == "📖 ملزمة المقرر":
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        btn_file1 = types.InlineKeyboardButton("📁 الملف الأول", callback_data='db_file_1')
+        btn_file2 = types.InlineKeyboardButton("📁 الملف الثاني", callback_data='db_file_2')
+        markup.add(btn_file1, btn_file2)
+        bot.send_message(
+            chat_id, 
+            "📖 أزرار ملزمة مقرر قواعد البيانات (اختر الملف المطلوب):", 
+            reply_markup=markup
+        )
+
+    # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط تسجيلات المحاضرة الثانية، الثالثة، الرابعة، الخامسة)
+    elif text == "🖼️ صور المحاضرات":
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        btn_lec2_p1 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (1)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
+        btn_lec2_p2 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (2)", url="https://drive.google.com/file/d/1BOUOhEWM_58qwYdAwVEmlgbqR-UkQWBU/view?usp=drivesdk")
+        btn_lec3 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثالثة", url="https://drive.google.com/file/d/1MWnbxfJ1uKWlcTJNjeqXoQ1RWaKcL7Qq/view?usp=drivesdk")
+        btn_lec4 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الرابعة", url="https://drive.google.com/file/d/1WXykOVZT0iEIGHURpEqoWftjgwmrzojc/view?usp=drivesdk")
+        btn_lec5 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الخامسة", url="https://drive.google.com/file/d/1NhlAoAXGAeYtpQXYLyfBSFOicLVyuxcq/view?usp=drivesdk")
+        markup.add(btn_lec2_p1, btn_lec2_p2, btn_lec3, btn_lec4, btn_lec5)
+        bot.send_message(
+            chat_id,
+            "🖼️ تسجيلات ومحاضرات مقرر قواعد البيانات:",
+            reply_markup=markup
+        )
+
+    elif text == "📝 ملخص المقرر" or text == "📋 نماذج اختبارات" or text == "⚙️ العملي":
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
 def send_course_menu(chat_id, course_name, has_practical=False):
@@ -140,7 +168,7 @@ if __name__ == "__main__":
     bot.infinity_polling()
 
 # ==========================================
-# أرشيف مقرر قواعد البيانات - دفعة IT
+# أرشيف مقرر قواعد البيانات - دفعة IT (تراكمي وتحت بعضه)
 # ==========================================
 
 @bot.callback_query_handler(func=lambda call: call.data == 'db_file_1')
@@ -160,4 +188,4 @@ def send_database_file_two(call):
         file_id_2, 
         caption="📖 مقرر قواعد البيانات\n📁 الملف الثاني: Database Fundamentals (Part 2)\n💙 دفعة IT - جامعة الجند"
     )
-
+    
