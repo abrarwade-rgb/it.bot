@@ -98,7 +98,6 @@ def handle_messages(message):
     elif "هياكل البيانات والخوارزميات" in text:
         send_course_menu(chat_id, "هياكل البيانات والخوارزميات (د. محمد سلطان)", has_practical=True)
     elif "تحليل وتصميم النظم" in text:
-        # تحليل وتصميم النظم مادة نظرية فقط (بدون عملي)
         send_course_menu(chat_id, "تحليل وتصميم النظم (د. عبد الرحمن سعيد)", has_practical=False)
     elif "الإحصاء والاحتمالات" in text or "مبادئ المحاسبة" in text:
         send_course_menu(chat_id, text, has_practical=False)
@@ -108,16 +107,21 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (ملفات تليجرام مباشرة تراكمية)
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (ترسل الملفات مباشرة في الشات فوراً)
     elif text == "📖 ملزمة المقرر":
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        btn_file1 = types.InlineKeyboardButton("📁 الملف الأول", callback_data='db_file_1')
-        btn_file2 = types.InlineKeyboardButton("📁 الملف الثاني", callback_data='db_file_2')
-        markup.add(btn_file1, btn_file2)
-        bot.send_message(
+        file_id_1 = "BQACAgQAAxkBAAIuVWryDwjFlZAjwepTAhww2hZMLIzNAAJ3HwACVHyRU6eGh9pBrc4DPQQ"
+        file_id_2 = "BQACAgQAAxkBAAIuWmryEZYw73kKcjERPTohNV_IKjj0AAJ6HwACVHyRU1g0qUA9NNeGPQQ"
+        
+        bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات...")
+        bot.send_document(
             chat_id, 
-            "📖 أزرار ملزمة مقرر قواعد البيانات (اختر الملف المطلوب):", 
-            reply_markup=markup
+            file_id_1, 
+            caption="📖 مقرر قواعد البيانات\n📁 الملف الأول: Database Fundamentals (Part 1)\n💙 دفعة IT - جامعة الجند"
+        )
+        bot.send_document(
+            chat_id, 
+            file_id_2, 
+            caption="📖 مقرر قواعد البيانات\n📁 الملف الثاني: Database Fundamentals (Part 2)\n💙 دفعة IT - جامعة الجند"
         )
 
     # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط تسجيلات المحاضرة الثانية، الثالثة، الرابعة، الخامسة)
@@ -166,26 +170,4 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-
-# ==========================================
-# أرشيف مقرر قواعد البيانات - دفعة IT (تراكمي وتحت بعضه)
-# ==========================================
-
-@bot.callback_query_handler(func=lambda call: call.data == 'db_file_1')
-def send_database_file_one(call):
-    file_id_1 = "BQACAgQAAxkBAAIuVWryDwjFlZAjwepTAhww2hZMLIzNAAJ3HwACVHyRU6eGh9pBrc4DPQQ"
-    bot.send_document(
-        call.message.chat.id, 
-        file_id_1, 
-        caption="📖 مقرر قواعد البيانات\n📁 الملف الأول: Database Fundamentals (Part 1)\n💙 دفعة IT - جامعة الجند"
-    )
-
-@bot.callback_query_handler(func=lambda call: call.data == 'db_file_2')
-def send_database_file_two(call):
-    file_id_2 = "BQACAgQAAxkBAAIuWmryEZYw73kKcjERPTohNV_IKjj0AAJ6HwACVHyRU1g0qUA9NNeGPQQ"
-    bot.send_document(
-        call.message.chat.id, 
-        file_id_2, 
-        caption="📖 مقرر قواعد البيانات\n📁 الملف الثاني: Database Fundamentals (Part 2)\n💙 دفعة IT - جامعة الجند"
-    )
     
