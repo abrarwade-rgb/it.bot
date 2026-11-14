@@ -107,24 +107,25 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (ترسل الملفات مباشرة في الشات فوراً)
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات مباشرة في الشات بدون أزرار وسيطة)
     elif text == "📖 ملزمة المقرر":
         file_id_1 = "BQACAgQAAxkBAAIuVWryDwjFlZAjwepTAhww2hZMLIzNAAJ3HwACVHyRU6eGh9pBrc4DPQQ"
         file_id_2 = "BQACAgQAAxkBAAIuWmryEZYw73kKcjERPTohNV_IKjj0AAJ6HwACVHyRU1g0qUA9NNeGPQQ"
         
-        bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات...")
+        # إرسال الملف الأول مباشرة
         bot.send_document(
             chat_id, 
             file_id_1, 
-            caption="📖 مقرر قواعد البيانات\n📁 الملف الأول: Database Fundamentals (Part 1)\n💙 دفعة IT - جامعة الجند"
+            caption="📖 ملزمة مقدمة القواعد البيانات (1)\n💙 دفعة IT - جامعة الجند"
         )
+        # إرسال الملف الثاني مباشرة بعدها
         bot.send_document(
             chat_id, 
             file_id_2, 
-            caption="📖 مقرر قواعد البيانات\n📁 الملف الثاني: Database Fundamentals (Part 2)\n💙 دفعة IT - جامعة الجند"
+            caption="📖 ملزمة مقدمة القواعد البيانات (2)\n💙 دفعة IT - جامعة الجند"
         )
 
-    # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط تسجيلات المحاضرة الثانية، الثالثة، الرابعة، الخامسة)
+    # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط الدرايف للمحاضرات)
     elif text == "🖼️ صور المحاضرات":
         markup = types.InlineKeyboardMarkup(row_width=1)
         btn_lec2_p1 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (1)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
@@ -170,4 +171,4 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-    
+        
