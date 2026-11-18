@@ -6,7 +6,7 @@ from telebot import types
 
 TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
-bot.remove_webhook()  # لحذف أي ربط ويبهوك قديم وإيقاف الإعلانات المزعجة نهائياً
+bot.remove_webhook()
 
 # --- 1. سيرفر الـ Flask لإبقاء البوت مستيقظاً على Render ---
 app = Flask(__name__)
@@ -102,30 +102,32 @@ def handle_messages(message):
     elif "الإحصاء والاحتمالات" in text or "مبادئ المحاسبة" in text:
         send_course_menu(chat_id, text, has_practical=False)
 
+    # زر جدول المحاضرات (يرسل صورة الجدول مباشرة في الشات)
     elif text == "📅 جدول المحاضرات":
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
-        bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
-
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات دفعة واحدة بشكل مضمون)
-    elif text == "📖 ملزمة المقرر":
-        file_id_part1 = "BQACAgQAAxkBAAIrUWrx75tQ7QABaX1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE"
-        file_id_part2 = "BQACAgQAAxkBAAIrW2rx8B7q2QABaZ2K5wABc3b_0aHPAAPnUwACVHyRU3c8bAAB9t5v1DQE"
-        
-        bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات مباشرة...")
+        table_photo_id = "AgACAgQAAxkBAAICaWryJq7rQABaZ1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE" # الـ ID المستخرج من صورتك
         try:
-            # إرسال الملفين كألبوم مستندات معاً
-            media = [
-                types.InputMediaDocument(file_id_part1, caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"),
-                types.InputMediaDocument(file_id_part2, caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
-            ]
-            bot.send_media_group(chat_id, media)
-        except Exception as e:
-            # طريقة احتياطية في حال لم يقبل الألبوم، يرسلهما فرادى بـ send_document مع تأكيد
-            bot.send_document(chat_id, file_id_part1)
-            bot.send_document(chat_id, file_id_part2)
+            bot.send_photo(
+                chat_id, 
+                table_photo_id, 
+                caption="📅 جدول المحاضرات الدراسية\n💙 دفعة IT - جامعة الجند"
+            )
+        except Exception:
+            # رابط احتياطي أو رسالة في حال حدوث خطأ بالـ ID
+            bot.send_message(chat_id, "📅 جدول المحاضرات الدراسية (جامعة الجند)")
 
-    # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط الدرايف للمحاضرات)
+    # 1. ملزمة المقرر (أزرار روابط درايف سريعة ومضمونة)
+    elif text == "📖 ملزمة المقرر":
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        btn_part1 = types.InlineKeyboardButton("📥 تحميل الجزء الأول (Part 1)", url="https://drive.google.com/file/d/1BOUOhEWM_58qwYdAwVEmlgbqR-UkQWBU/view?usp=drivesdk")
+        btn_part2 = types.InlineKeyboardButton("📥 تحميل الجزء الثاني (Part 2)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
+        markup.add(btn_part1, btn_part2)
+        bot.send_message(
+            chat_id,
+            "📖 ملازم مقرر قواعد البيانات (د/ بشير الطيار):\nاضغط على الزر لتحميل الملزمة مباشرة 👇",
+            reply_markup=markup
+        )
+
+    # 2. صور المحاضرات لمادة قواعد البيانات
     elif text == "🖼️ صور المحاضرات":
         markup = types.InlineKeyboardMarkup(row_width=1)
         btn_lec2_p1 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (1)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
@@ -144,30 +146,4 @@ def handle_messages(message):
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
 def send_course_menu(chat_id, course_name, has_practical=False):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     
-    btn_mlazem = types.KeyboardButton("📖 ملزمة المقرر")
-    btn_photos = types.KeyboardButton("🖼️ صور المحاضرات")
-    btn_summary = types.KeyboardButton("📝 ملخص المقرر")
-    btn_exams = types.KeyboardButton("📋 نماذج اختبارات")
-    
-    markup.add(btn_mlazem, btn_photos, btn_summary, btn_exams)
-    
-    if has_practical:
-        btn_practical = types.KeyboardButton("⚙️ العملي")
-        markup.add(btn_practical)
-        
-    btn_back = types.KeyboardButton("العودة للمقررات")
-    btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
-    markup.row(btn_back, btn_home)
-    
-    bot.send_message(chat_id, f"📌 اختر المحتوى المطلوب لمادة: *{course_name}*", parse_mode="Markdown", reply_markup=markup)
-
-
-# --- 3. تشغيل السيرفر والبوت معاً ---
-if __name__ == "__main__":
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.start()
-
-    print("Bot is running...")
-    bot.infinity_polling()
