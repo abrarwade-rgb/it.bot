@@ -107,21 +107,23 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات مباشرة بدون أزرار)
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات دفعة واحدة بشكل مضمون)
     elif text == "📖 ملزمة المقرر":
         file_id_part1 = "BQACAgQAAxkBAAIrUWrx75tQ7QABaX1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE"
         file_id_part2 = "BQACAgQAAxkBAAIrW2rx8B7q2QABaZ2K5wABc3b_0aHPAAPnUwACVHyRU3c8bAAB9t5v1DQE"
         
-        bot.send_document(
-            chat_id, 
-            file_id_part1, 
-            caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"
-        )
-        bot.send_document(
-            chat_id, 
-            file_id_part2, 
-            caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"
-        )
+        bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات مباشرة...")
+        try:
+            # إرسال الملفين كألبوم مستندات معاً
+            media = [
+                types.InputMediaDocument(file_id_part1, caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"),
+                types.InputMediaDocument(file_id_part2, caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
+            ]
+            bot.send_media_group(chat_id, media)
+        except Exception as e:
+            # طريقة احتياطية في حال لم يقبل الألبوم، يرسلهما فرادى بـ send_document مع تأكيد
+            bot.send_document(chat_id, file_id_part1)
+            bot.send_document(chat_id, file_id_part2)
 
     # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط الدرايف للمحاضرات)
     elif text == "🖼️ صور المحاضرات":
@@ -169,4 +171,3 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-        
