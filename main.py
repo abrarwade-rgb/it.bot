@@ -114,16 +114,16 @@ def handle_messages(message):
         except Exception as e:
             bot.send_message(chat_id, "📅 جدول المحاضرات الدراسية (تأكد من رفع صورة table.png في المستودع)")
 
-    # 📖 ملزمة المقرر (ترسل الملفات محلياً كملفات مباشرة في الشات)
+    # 📖 ملزمة المقرر (ترسل ملفات الباوربوينت محلياً كملفات مباشرة في الشات)
     elif text == "📖 ملزمة المقرر":
         bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات...")
         try:
-            with open('database_part1.pdf', 'rb') as f1:
+            with open('database_part1.pptx', 'rb') as f1:
                 bot.send_document(chat_id, f1, caption="📖 ملزمة مقدمة قواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
-            with open('database_part2.pdf', 'rb') as f2:
+            with open('database_part2.pptx', 'rb') as f2:
                 bot.send_document(chat_id, f2, caption="📖 ملزمة مقدمة قواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
         except Exception as e:
-            bot.send_message(chat_id, "⚠️ تذكير: تأكد من رفع ملفات الملازم (database_part1.pdf و database_part2.pdf) في جيت هاب.")
+            bot.send_message(chat_id, "⚠️ تذكير: تأكد من رفع ملفات الباوربوينت (database_part1.pptx و database_part2.pptx) في جيت هاب.")
 
     # 🖼️ صور المحاضرات لمادة قواعد البيانات
     elif text == "🖼️ صور المحاضرات":
@@ -132,7 +132,7 @@ def handle_messages(message):
         btn_lec2_p2 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (2)", url="https://drive.google.com/file/d/1BOUOhEWM_58qwYdAwVEmlgbqR-UkQWBU/view?usp=drivesdk")
         btn_lec3 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثالثة", url="https://drive.google.com/file/d/1MWnbxfJ1uKWlcTJNjeqXoQ1RWaKcL7Qq/view?usp=drivesdk")
         btn_lec4 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الرابعة", url="https://drive.google.com/file/d/1WXykOVZT0iEIGHURpEqoWftjgwmrzojc/view?usp=drivesdk")
-        btn_lec5 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الخامسة", url="https://drive.json" if False else "https://drive.google.com/file/d/1NhlAoAXGAeYtpQXYLyfBSFOicLVyuxcq/view?usp=drivesdk")
+        btn_lec5 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الخامسة", url="https://drive.google.com/file/d/1NhlAoAXGAeYtpQXYLyfBSFOicLVyuxcq/view?usp=drivesdk")
         markup.add(btn_lec2_p1, btn_lec2_p2, btn_lec3, btn_lec4, btn_lec5)
         bot.send_message(
             chat_id,
@@ -171,4 +171,3 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-        
