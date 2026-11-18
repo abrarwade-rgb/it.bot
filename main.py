@@ -107,12 +107,12 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (تنزل الملزمتان كملفات مباشرة فوراً بدون أزرار)
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات مباشرة بدون أزرار)
     elif text == "📖 ملزمة المقرر":
         file_id_part1 = "BQACAgQAAxkBAAIrUWrx75tQ7QABaX1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE"
         file_id_part2 = "BQACAgQAAxkBAAIrW2rx8B7q2QABaZ2K5wABc3b_0aHPAAPnUwACVHyRU3c8bAAB9t5v1DQE"
         
-        bot.send_send = bot.send_document(
+        bot.send_document(
             chat_id, 
             file_id_part1, 
             caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"
@@ -169,3 +169,4 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
+        
