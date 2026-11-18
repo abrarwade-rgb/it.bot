@@ -107,22 +107,20 @@ def handle_messages(message):
         markup.add(types.KeyboardButton("العودة للمقررات"), types.KeyboardButton("🏠 القائمة الرئيسية"))
         bot.send_message(chat_id, "📅 هنا سيتم إدراج جدول المحاضرات الدراسية.", reply_markup=markup)
 
-    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (إرسال الملفات مباشرة في الشات بدون أزرار وسيطة)
+    # 1. قسم ملزمة المقرر لمادة قواعد البيانات (تنزل الملزمتان كملفات مباشرة فوراً بدون أزرار)
     elif text == "📖 ملزمة المقرر":
-        file_id_1 = "BQACAgQAAxkBAAIuVWryDwjFlZAjwepTAhww2hZMLIzNAAJ3HwACVHyRU6eGh9pBrc4DPQQ"
-        file_id_2 = "BQACAgQAAxkBAAIuWmryEZYw73kKcjERPTohNV_IKjj0AAJ6HwACVHyRU1g0qUA9NNeGPQQ"
+        file_id_part1 = "BQACAgQAAxkBAAIrUWrx75tQ7QABaX1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE"
+        file_id_part2 = "BQACAgQAAxkBAAIrW2rx8B7q2QABaZ2K5wABc3b_0aHPAAPnUwACVHyRU3c8bAAB9t5v1DQE"
         
-        # إرسال الملف الأول مباشرة
-        bot.send_document(
+        bot.send_send = bot.send_document(
             chat_id, 
-            file_id_1, 
-            caption="📖 ملزمة مقدمة القواعد البيانات (1)\n💙 دفعة IT - جامعة الجند"
+            file_id_part1, 
+            caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"
         )
-        # إرسال الملف الثاني مباشرة بعدها
         bot.send_document(
             chat_id, 
-            file_id_2, 
-            caption="📖 ملزمة مقدمة القواعد البيانات (2)\n💙 دفعة IT - جامعة الجند"
+            file_id_part2, 
+            caption="📖 ملزمة مقدمة القواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند"
         )
 
     # 2. قسم صور المحاضرات لمادة قواعد البيانات (روابط الدرايف للمحاضرات)
@@ -171,4 +169,3 @@ if __name__ == "__main__":
 
     print("Bot is running...")
     bot.infinity_polling()
-        
