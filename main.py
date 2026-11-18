@@ -102,39 +102,37 @@ def handle_messages(message):
     elif "الإحصاء والاحتمالات" in text or "مبادئ المحاسبة" in text:
         send_course_menu(chat_id, text, has_practical=False)
 
-    # زر جدول المحاضرات (يرسل صورة الجدول مباشرة في الشات)
+    # 📅 زر جدول المحاضرات (يرسل الصورة محلياً فوراً)
     elif text == "📅 جدول المحاضرات":
-        table_photo_id = "AgACAgQAAxkBAAICaWryJq7rQABaZ1K4wABb2a_9ZgOAAPmUwACVHyRU2V7bAAB9s4v0DQE" # الـ ID المستخرج من صورتك
         try:
-            bot.send_photo(
-                chat_id, 
-                table_photo_id, 
-                caption="📅 جدول المحاضرات الدراسية\n💙 دفعة IT - جامعة الجند"
-            )
-        except Exception:
-            # رابط احتياطي أو رسالة في حال حدوث خطأ بالـ ID
-            bot.send_message(chat_id, "📅 جدول المحاضرات الدراسية (جامعة الجند)")
+            with open('table.png', 'rb') as photo:
+                bot.send_photo(
+                    chat_id, 
+                    photo, 
+                    caption="📅 جدول المحاضرات الدراسية\n💙 دفعة IT - جامعة الجند"
+                )
+        except Exception as e:
+            bot.send_message(chat_id, "📅 جدول المحاضرات الدراسية (تأكد من رفع صورة table.png في المستودع)")
 
-    # 1. ملزمة المقرر (أزرار روابط درايف سريعة ومضمونة)
+    # 📖 ملزمة المقرر (ترسل الملفات محلياً كملفات مباشرة في الشات)
     elif text == "📖 ملزمة المقرر":
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        btn_part1 = types.InlineKeyboardButton("📥 تحميل الجزء الأول (Part 1)", url="https://drive.google.com/file/d/1BOUOhEWM_58qwYdAwVEmlgbqR-UkQWBU/view?usp=drivesdk")
-        btn_part2 = types.InlineKeyboardButton("📥 تحميل الجزء الثاني (Part 2)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
-        markup.add(btn_part1, btn_part2)
-        bot.send_message(
-            chat_id,
-            "📖 ملازم مقرر قواعد البيانات (د/ بشير الطيار):\nاضغط على الزر لتحميل الملزمة مباشرة 👇",
-            reply_markup=markup
-        )
+        bot.send_message(chat_id, "📖 جاري إرسال ملازم مقرر قواعد البيانات...")
+        try:
+            with open('database_part1.pdf', 'rb') as f1:
+                bot.send_document(chat_id, f1, caption="📖 ملزمة مقدمة قواعد البيانات (الجزء الأول)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
+            with open('database_part2.pdf', 'rb') as f2:
+                bot.send_document(chat_id, f2, caption="📖 ملزمة مقدمة قواعد البيانات (الجزء الثاني)\nد/ بشير الطيار\n💙 دفعة IT - جامعة الجند")
+        except Exception as e:
+            bot.send_message(chat_id, "⚠️ تذكير: تأكد من رفع ملفات الملازم (database_part1.pdf و database_part2.pdf) في جيت هاب.")
 
-    # 2. صور المحاضرات لمادة قواعد البيانات
+    # 🖼️ صور المحاضرات لمادة قواعد البيانات
     elif text == "🖼️ صور المحاضرات":
         markup = types.InlineKeyboardMarkup(row_width=1)
         btn_lec2_p1 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (1)", url="https://drive.google.com/file/d/1CluNmUQBZHz8XIXE4LBwhwF-V7td7zsU/view?usp=drivesdk")
         btn_lec2_p2 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثانية (2)", url="https://drive.google.com/file/d/1BOUOhEWM_58qwYdAwVEmlgbqR-UkQWBU/view?usp=drivesdk")
         btn_lec3 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الثالثة", url="https://drive.google.com/file/d/1MWnbxfJ1uKWlcTJNjeqXoQ1RWaKcL7Qq/view?usp=drivesdk")
         btn_lec4 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الرابعة", url="https://drive.google.com/file/d/1WXykOVZT0iEIGHURpEqoWftjgwmrzojc/view?usp=drivesdk")
-        btn_lec5 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الخامسة", url="https://drive.google.com/file/d/1NhlAoAXGAeYtpQXYLyfBSFOicLVyuxcq/view?usp=drivesdk")
+        btn_lec5 = types.InlineKeyboardButton("🎥 رابط تسجيل المحاضرة الخامسة", url="https://drive.json" if False else "https://drive.google.com/file/d/1NhlAoAXGAeYtpQXYLyfBSFOicLVyuxcq/view?usp=drivesdk")
         markup.add(btn_lec2_p1, btn_lec2_p2, btn_lec3, btn_lec4, btn_lec5)
         bot.send_message(
             chat_id,
@@ -146,4 +144,31 @@ def handle_messages(message):
         bot.send_message(chat_id, f"📁 جلب المحتوى لـ: ({text})\n*(قريباً سيتم رفع الملفات الخاصة بهذا القسم هنا)*")
 
 def send_course_menu(chat_id, course_name, has_practical=False):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     
+    btn_mlazem = types.KeyboardButton("📖 ملزمة المقرر")
+    btn_photos = types.KeyboardButton("🖼️ صور المحاضرات")
+    btn_summary = types.KeyboardButton("📝 ملخص المقرر")
+    btn_exams = types.KeyboardButton("📋 نماذج اختبارات")
+    
+    markup.add(btn_mlazem, btn_photos, btn_summary, btn_exams)
+    
+    if has_practical:
+        btn_practical = types.KeyboardButton("⚙️ العملي")
+        markup.add(btn_practical)
+        
+    btn_back = types.KeyboardButton("العودة للمقررات")
+    btn_home = types.KeyboardButton("🏠 القائمة الرئيسية")
+    markup.row(btn_back, btn_home)
+    
+    bot.send_message(chat_id, f"📌 اختر المحتوى المطلوب لمادة: *{course_name}*", parse_mode="Markdown", reply_markup=markup)
+
+
+# --- 3. تشغيل السيرفر والبوت معاً ---
+if __name__ == "__main__":
+    flask_thread = threading.Thread(target=run_flask)
+    flask_thread.start()
+
+    print("Bot is running...")
+    bot.infinity_polling()
+        
